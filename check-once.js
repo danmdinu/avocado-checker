@@ -18,7 +18,7 @@ const CONFIG = {
     ],
     // Twilio credentials
     accountSid: 'AC0e74606542a6a7f054d2b24c9fd8bdf3',
-    authToken:  '5eb762c8f14bedd0b199ad6f0cdc40e5',
+    authToken:  '32e9011e97f21bfa70e666063addccaa',
     fromNumber: 'whatsapp:+14155238886' // Twilio WhatsApp sandbox number
   },
   stateFile: path.join(__dirname, 'state.json')
