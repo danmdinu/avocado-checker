@@ -26,5 +26,6 @@ jobs:
       
     - name: Run avocado stock check
       env:
-        RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+        TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
       run: node check-once.js 
