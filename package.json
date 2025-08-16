@@ -1,0 +1,21 @@
+{
+  "name": "avocado_notifications",
+  "version": "1.0.0",
+  "description": "Daily avocado stock checker for Tropical Fruit Paradise",
+  "main": "index.js",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test-scraper.js"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "jsdom": "^19.0.0",
+    "resend": "^0.16.0",
+    "node-cron": "^3.0.2"
+  },
+  "author": "Dan Dinu",
+  "license": "MIT"
+} 
