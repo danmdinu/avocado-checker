@@ -17,8 +17,8 @@ const CONFIG = {
       '40765908044'   // Add more numbers as needed
     ],
     // Twilio credentials
-    accountSid: process.env.TWILIO_ACCOUNT_SID || 'TWILIO_ACCOUNT_SID',
-    authToken: process.env.TWILIO_AUTH_TOKEN || 'TWILIO_AUTH_TOKEN',
+    accountSid: 'AC0e74606542a6a7f054d2b24c9fd8bdf3',
+    authToken:  '5eb762c8f14bedd0b199ad6f0cdc40e5',
     fromNumber: 'whatsapp:+14155238886' // Twilio WhatsApp sandbox number
   },
   stateFile: path.join(__dirname, 'state.json')
