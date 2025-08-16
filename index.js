@@ -160,7 +160,8 @@ async function saveState(state) {
   }
 }
 
-// Send email notification
+// Note: This file still uses email for backward compatibility
+// For WhatsApp notifications, use check-once.js with GitHub Actions
 async function sendNotification(newProducts) {
   try {
     const resend = initializeResend();

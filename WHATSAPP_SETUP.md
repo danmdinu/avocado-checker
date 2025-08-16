@@ -80,10 +80,11 @@ git push origin main
 3. Click **Run workflow** → **Run workflow**
 4. Check logs for success messages
 
-## Expected WhatsApp Message Format:
+## Expected WhatsApp Message Formats:
 
+### 🎉 New Avocados Found:
 ```
-🥑 *Avocado în stoc!*
+🥑 *AVOCADO NOU ÎN STOC!*
 
 Bună! Avocado este din nou disponibil la Tropical Fruit Paradise:
 
@@ -95,8 +96,37 @@ Bună! Avocado este din nou disponibil la Tropical Fruit Paradise:
 
 Verifică site-ul: https://tropicalfruitparadise.com/fructe-bio/
 
-_Avocado Notification Bot_
+_Avocado Bot - marți, 16 august 2025_
 ```
+
+### ✅ Still In Stock:
+```
+🥑 *Avocado încă în stoc*
+
+Bună! Avocado este încă disponibil la Tropical Fruit Paradise:
+
+• Avocado Bio Premium
+  https://tropicalfruitparadise.com/product/avocado-bio
+
+Verifică site-ul: https://tropicalfruitparadise.com/fructe-bio/
+
+_Avocado Bot - marți, 16 august 2025_
+```
+
+### 😔 No Stock:
+```
+😔 *Nu este avocado în stoc*
+
+Bună! Din păcate, avocado nu este disponibil astăzi la Tropical Fruit Paradise.
+
+Te voi anunța când devine disponibil!
+
+Verifică site-ul: https://tropicalfruitparadise.com/fructe-bio/
+
+_Avocado Bot - marți, 16 august 2025_
+```
+
+**Note**: You'll receive a WhatsApp message **every day at 10 AM** regardless of stock status!
 
 ## Upgrading to Production (Optional)
 

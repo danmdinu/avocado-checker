@@ -12,12 +12,13 @@ const CONFIG = {
   whatsapp: {
     // Add multiple phone numbers (with country code, no + sign)
     phoneNumbers: [
-      '40123456789',  // Replace with your actual phone number
-      '40987654321'   // Add more numbers as needed
+      '420720069728',  // Replace with your actual phone number
+      '40756116799',   // Add more numbers as needed
+      '40765908044'   // Add more numbers as needed
     ],
     // Twilio credentials
-    accountSid: process.env.TWILIO_ACCOUNT_SID || 'YOUR_TWILIO_ACCOUNT_SID',
-    authToken: process.env.TWILIO_AUTH_TOKEN || 'YOUR_TWILIO_AUTH_TOKEN',
+    accountSid: process.env.TWILIO_ACCOUNT_SID || 'AC0e74606542a6a7f054d2b24c9fd8bdf3',
+    authToken: process.env.TWILIO_AUTH_TOKEN || '5eb762c8f14bedd0b199ad6f0cdc40e5',
     fromNumber: 'whatsapp:+14155238886' // Twilio WhatsApp sandbox number
   },
   stateFile: path.join(__dirname, 'state.json')
@@ -103,21 +104,32 @@ async function saveState(state) {
   }
 }
 
-async function sendWhatsAppNotification(newProducts) {
+async function sendWhatsAppNotification(products, status) {
   try {
     const { accountSid, authToken, fromNumber, phoneNumbers } = CONFIG.whatsapp;
     
     // Check if credentials are set
     if (!accountSid || accountSid === 'YOUR_TWILIO_ACCOUNT_SID' || !authToken || authToken === 'YOUR_TWILIO_AUTH_TOKEN') {
       console.log(`[${new Date().toISOString()}] ⚠️  No Twilio credentials - Demo mode`);
-      console.log(`[${new Date().toISOString()}] 📱 Would send WhatsApp to ${phoneNumbers.length} numbers about ${newProducts.length} new products`);
-      newProducts.forEach(p => console.log(`- ${p.name}`));
+      console.log(`[${new Date().toISOString()}] 📱 Would send WhatsApp to ${phoneNumbers.length} numbers - Status: ${status}`);
+      if (products.length > 0) {
+        products.forEach(p => console.log(`- ${p.name}`));
+      }
       return;
     }
 
-    // Create message content
-    const productList = newProducts.map(p => `• ${p.name}${p.url ? `\n  ${p.url}` : ''}`).join('\n\n');
-    const message = `🥑 *Avocado în stoc!*
+    // Create message content based on status
+    let message;
+    const today = new Date().toLocaleDateString('ro-RO', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+
+    if (status === 'new') {
+      const productList = products.map(p => `• ${p.name}${p.url ? `\n  ${p.url}` : ''}`).join('\n\n');
+      message = `🥑 *AVOCADO NOU ÎN STOC!*
 
 Bună! Avocado este din nou disponibil la Tropical Fruit Paradise:
 
@@ -125,7 +137,29 @@ ${productList}
 
 Verifică site-ul: ${CONFIG.url}
 
-_Avocado Notification Bot_`;
+_Avocado Bot - ${today}_`;
+    } else if (status === 'existing') {
+      const productList = products.map(p => `• ${p.name}${p.url ? `\n  ${p.url}` : ''}`).join('\n\n');
+      message = `🥑 *Avocado încă în stoc*
+
+Bună! Avocado este încă disponibil la Tropical Fruit Paradise:
+
+${productList}
+
+Verifică site-ul: ${CONFIG.url}
+
+_Avocado Bot - ${today}_`;
+    } else { // status === 'none'
+      message = `😔 *Nu este avocado în stoc*
+
+Bună! Din păcate, avocado nu este disponibil astăzi la Tropical Fruit Paradise.
+
+Te voi anunța când devine disponibil!
+
+Verifică site-ul: ${CONFIG.url}
+
+_Avocado Bot - ${today}_`;
+    }
 
     // Send to all phone numbers
     const results = [];
@@ -195,14 +229,16 @@ async function checkAvocadoStock() {
     
     await saveState(newState);
     
-    // Send notification if new products found
+    // Always send WhatsApp notification with current status
     if (newProducts.length > 0) {
       console.log(`[${new Date().toISOString()}] 🎉 New avocado products found:`, newProducts.map(p => p.name));
-      await sendWhatsAppNotification(newProducts);
+      await sendWhatsAppNotification(newProducts, 'new');
     } else if (currentProducts.length === 0) {
       console.log(`[${new Date().toISOString()}] 😔 No avocado products in stock`);
+      await sendWhatsAppNotification([], 'none');
     } else {
       console.log(`[${new Date().toISOString()}] ✅ Avocado still in stock, no new products`);
+      await sendWhatsAppNotification(currentProducts, 'existing');
     }
     
     console.log(`[${new Date().toISOString()}] ✨ Check completed successfully`);
