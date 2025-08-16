@@ -24,6 +24,10 @@ const CONFIG = {
   stateFile: path.join(__dirname, 'state.json')
 };
 
+function chooseRandom(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
 // Import functions from main script
 async function scrapeAvocadoStock() {
   try {
@@ -118,47 +122,40 @@ async function sendWhatsAppNotification(products, status) {
       return;
     }
 
-    // Create message content based on status
-    let message;
+    // Create message content based on status (funny variants)
     const today = new Date().toLocaleDateString('ro-RO', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
     });
 
+    const productList = products.length > 0 
+      ? products.map(p => `• ${p.name}${p.url ? `\n  ${p.url}` : ''}`).join('\n\n')
+      : '';
+
+    const NEW_TEMPLATES = [
+      `🥑💥 *AVOCADO BREAKING NEWS!*\n\nTocmai a aterizat avocado proaspăt la Tropical Fruit Paradise!\n\n${productList}\n\nFugi înainte să se transforme în guacamole!\n${CONFIG.url}\n\n_Avocado Bot – ${today}_`,
+      `🚨🥑 *ALERTĂ DE VERDE!*\n\nAvocado spotted! Rezervele au revenit și nu glumim!\n\n${productList}\n\nLink-ul magic: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`,
+      `🕵️‍♂️🥑 *Misiune îndeplinită:* Avocado găsit!\n\nLista trofeelor:\n\n${productList}\n\nContinuă vânătoarea aici: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`
+    ];
+
+    const EXISTING_TEMPLATES = [
+      `🥑✅ *Avocado încă rezistă pe raft!*\n\nNu te panica, încă ai timp: \n\n${productList}\n\nIa-l de aici înainte să dispară: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`,
+      `🟢🥑 *Stocul de avocado e încă în viață!*\n\nÎncă se dă, încă se ia: \n\n${productList}\n\nPână nu se coace prea tare: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`,
+      `⏳🥑 *Avocado prezent și corect!*\n\nSe ține tare: \n\n${productList}\n\nGrăbește-te încet: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`
+    ];
+
+    const NONE_TEMPLATES = [
+      `😔🥑 *Tristețe verde:* Niciun avocado azi.\n\nAm căutat prin toate lădițele. Doar vise de guacamole...\n\nVerificăm iar mâine: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`,
+      `🧪🥑 *Experiment eșuat:* Avocado nu a apărut.\n\nConcluzie: universul nu vrea toast cu avocado azi.\n\nNe regrupăm mâine: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`,
+      `🌪️🥑 *Zero avocado detectat.*\n\nSenzorii au bipăit, dar raftul e gol. Ținem radarul pornit.\n\nStatus live: ${CONFIG.url}\n\n_Avocado Bot – ${today}_`
+    ];
+
+    let message;
     if (status === 'new') {
-      const productList = products.map(p => `• ${p.name}${p.url ? `\n  ${p.url}` : ''}`).join('\n\n');
-      message = `🥑 *AVOCADO NOU ÎN STOC!*
-
-Bună! Avocado este din nou disponibil la Tropical Fruit Paradise:
-
-${productList}
-
-Verifică site-ul: ${CONFIG.url}
-
-_Avocado Bot - ${today}_`;
+      message = chooseRandom(NEW_TEMPLATES);
     } else if (status === 'existing') {
-      const productList = products.map(p => `• ${p.name}${p.url ? `\n  ${p.url}` : ''}`).join('\n\n');
-      message = `🥑 *Avocado încă în stoc*
-
-Bună! Avocado este încă disponibil la Tropical Fruit Paradise:
-
-${productList}
-
-Verifică site-ul: ${CONFIG.url}
-
-_Avocado Bot - ${today}_`;
-    } else { // status === 'none'
-      message = `😔 *Nu este avocado în stoc*
-
-Bună! Din păcate, avocado nu este disponibil astăzi la Tropical Fruit Paradise.
-
-Te voi anunța când devine disponibil!
-
-Verifică site-ul: ${CONFIG.url}
-
-_Avocado Bot - ${today}_`;
+      message = chooseRandom(EXISTING_TEMPLATES);
+    } else {
+      message = chooseRandom(NONE_TEMPLATES);
     }
 
     // Send to all phone numbers
